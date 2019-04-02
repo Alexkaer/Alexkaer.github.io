@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>nav.articles</title>
+    <title> - Minson</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate">
     <meta name="keywords" content="Android,Python,C++,Java,"> 
-    
+    <meta name="description" content="title: Android逆向工具收集date: 2019-04-02 16:37:32tags: Android逆向mp3: http://domain.com/awesome.mp3cover,"> 
     <meta name="author" content="Minson"> 
     <link rel="alternative" href="atom.xml" title="Minson" type="application/atom+xml"> 
     <link rel="icon" href="/img/nevermore2.jpeg"> 
@@ -30,7 +30,77 @@
 <body class="loading">
     <span id="config-title" style="display:none">Minson</span>
     <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://alexkaer.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle"></h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title"></h1>
+        <div class="stuff">
+            <span>四月 02, 2019</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>title: Android逆向工具收集<br>date: 2019-04-02 16:37:32<br>tags: Android逆向<br>mp3: <a href="http://domain.com/awesome.mp3" target="_blank" rel="noopener">http://domain.com/awesome.mp3</a><br>cover: <a href="https://cdn.pixabay.com/photo/2015/04/21/16/43/spring-733507__480.jpg" target="_blank" rel="noopener">https://cdn.pixabay.com/photo/2015/04/21/16/43/spring-733507__480.jpg</a></p>
+<h3 id="源程序修改（一种比较旧的方法）"><a href="#源程序修改（一种比较旧的方法）" class="headerlink" title="源程序修改（一种比较旧的方法）"></a>源程序修改（一种比较旧的方法）</h3><ul>
+<li>java -jar apktool.jar d -d xxx.apk -o 存放目录</li>
+<li>修改Android.manifest，application节点添加android:debuggable=”true”</li>
+<li>在入口类的oncreate方法中添加invoke-static{},Landroid/os/Debug;-&gt;waitForDebugger()V</li>
+<li>打包修改后的apk：  java -jar apktool.jar b -d 代码目录 -o xxx.apk</li>
+<li>对apk签名 java -jar signapk.jar testkey.x509.pem testkey.pk8 未签名apk名</li>
+</ul>
+<h3 id="导入源码"><a href="#导入源码" class="headerlink" title="导入源码"></a>导入源码</h3><ul>
+<li>AndroidSudio File-&gt;open选择编译后的文件目录，导入代码，打好断点</li>
+<li>设置远程调试选项 Run-&gt;Debug Configuration-&gt;Remote Java Applicaion，Host填localhost，端口未debug开放的8700</li>
+</ul>
+<h3 id="打开apk"><a href="#打开apk" class="headerlink" title="打开apk"></a>打开apk</h3><ul>
+<li>打开apk，看到wait for debug提示</li>
+<li>打开monitor，选中程序，开启8700端口</li>
+</ul>
+<h3 id="新版调试方法"><a href="#新版调试方法" class="headerlink" title="新版调试方法"></a>新版调试方法</h3><p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g1a8hqnpk3j31000jutck.jpg" alt="image"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src>
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://link.hhtjim.com/qq/001faIUs4M2zna.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="true" data-ci="3f69a7e8b6decb747d68" data-cs="61814092b21724eb1a699989186d847357ac1389" data-r="Alexkaer.github.io" data-o="Alexkaer" data-a="Alexkaer" data-d="false">查看评论</div>
+
+
+    </div>
     
+</div>
+
+
+    </div>
+</div>
 </body>
 <script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
 <script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
