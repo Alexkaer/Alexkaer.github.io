@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang class="loading">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>垃圾回收机制 - Minson&#39;s Notes</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="Android,Python,C++,Java,"> 
+    <meta name="description" content="Java虚拟机的内存模型
+JVM的内存可以分为两大类：
+
+线程共享（方法区、堆）
+线程私有（虚拟机栈、本地方法栈、程序计数器）
+
+下面进行分别说明：
+
+方法区
+用于存储被虚拟机加载的类信息、常量（运,"> 
+    <meta name="author" content="Minson"> 
+    <link rel="alternative" href="atom.xml" title="Minson&#39;s Notes" type="application/atom+xml"> 
+    <link rel="icon" href="/img/nevermore2.jpeg"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">Minson&#39;s Notes</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://alexkaer.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">垃圾回收机制</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class="main">
+        <h1 class="title">垃圾回收机制</h1>
+        <div class="stuff">
+            <span>四月 15, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Java基础-Android基础/">Java基础 Android基础</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="Java虚拟机的内存模型"><a href="#Java虚拟机的内存模型" class="headerlink" title="Java虚拟机的内存模型"></a>Java虚拟机的内存模型</h3><p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1555325253137&amp;di=e41f87b7d97e9977b03e4216abc2e88c&amp;imgtype=0&amp;src=http%3A%2F%2Fimage.bubuko.com%2Finfo%2F201804%2F20180402005809940609.png" alt="JVM内存模型"></p>
+<p>JVM的内存可以分为两大类：</p>
+<ul>
+<li>线程共享（方法区、堆）</li>
+<li>线程私有（虚拟机栈、本地方法栈、程序计数器）</li>
+</ul>
+<p>下面进行分别说明：</p>
+<ol>
+<li><p>方法区</p>
+<p>用于存储被虚拟机加载的类信息、常量（运行时常量池）、静态变量等。当方法区无法满足内存分配需求时，会抛出OutOfMemoryException异常。</p>
+</li>
+<li><p>堆</p>
+<p>堆是用来存放对象实例的内存空间，凡事通过new关键字新建的实例都存储在堆中。</p>
+</li>
+<li><p>虚拟机栈</p>
+<p>每个方法在执行的时候都会创建一个栈帧，用于存储局部变量表、操作数栈、动态链接、方法出口等信息，而且 <strong>每个方法从调用直至完成的过程，对应一个栈帧在虚拟机栈中入栈到出栈的过程</strong></p>
+<p>虚拟机栈有两种异常情况：StackOverflowException 和 OutOfMemoryException。</p>
+</li>
+<li><p>本地方法栈</p>
+<p><strong>本地方法栈与Java虚拟机栈非常相似，也是线程私有的，区别是虚拟机栈为虚拟机执行 Java 方法服务，而本地方法栈为虚拟机执行 Native 方法服务。</strong>与虚拟机栈一样，本地方法栈区域也会抛出 StackOverflowException 和 OutOfMemoryException。</p>
+</li>
+<li><p>程序计数器</p>
+<p><strong>为了线程切换后能够恢复到正确的执行位置，每条线程都需要一个独立的程序计数器去记录其正在执行的字节码指令地址。程序计数器是线程私有的一块较小的内存空间，其可以看做是当前线程所执行的字节码的行号指示器。</strong>如果线程正在执行的是一个 Java 方法，计数器记录的是正在执行的字节码指令的地址；如果正在执行的是 Native 方法，则计数器的值为空。</p>
+<p>程序计数器是唯一一个没有规定任何 OutOfMemoryError 的区域。</p>
+</li>
+</ol>
+<h3 id="判断需要回收的内存"><a href="#判断需要回收的内存" class="headerlink" title="判断需要回收的内存"></a>判断需要回收的内存</h3><h4 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h4><p><strong>引用计数算法是通过判断对象的引用数量来决定对象是否可以被回收。</strong></p>
+<p>堆中的每个对象实例都有一个引用计数。当一个对象被创建时，且将该对象实例分配给一个引用变量，该对象实例的引用计数设置为 1，当任何其它变量被赋值为这个对象的引用时，对象实例的引用计数加 1（a = b，则b引用的对象实例的计数器加 1），但当一个对象实例的某个引用超过了生命周期或者被设置为一个新值时，对象实例的引用计数减 1。特别地，当一个对象实例被垃圾收集时，它引用的任何对象实例的引用计数器均减 1。<strong>任何引用计数为0的对象实例可以被当作垃圾收集。</strong></p>
+<p><strong>问题</strong>：不能解决对象相互循环引用的问题。</p>
+<h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><p><strong>可达性分析算法是通过判断对象的引用链是否可达来决定对象是否可以被回收</strong>。</p>
+<p>可达性分析算法是从离散数学中的图论引入的，程序把所有的引用关系看作一张图，通过一系列的名为 “GC Roots” 的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain）。当一个对象到 GC Roots 没有任何引用链相连（用图论的话来说就是从 GC Roots 到这个对象不可达）时，则证明此对象是不可用的。</p>
+<p>GC roots对象包括以下几种：</p>
+<ul>
+<li>虚拟机栈(栈帧中的局部变量表)中引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中Native方法引用的对象</li>
+</ul>
+<p><img src="http://static.zybuluo.com/Rico123/q0t6nxkafapyn6yql7benc32/%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95%E7%A4%BA%E6%84%8F%E5%9B%BE.jpg" alt="事例"></p>
+<h3 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h3><h5 id="标记清除算法"><a href="#标记清除算法" class="headerlink" title="标记清除算法"></a>标记清除算法</h5><p><strong>标记-清除算法分为标记和清除两个阶段。该算法首先从根集合进行扫描，对存活的对象对象标记，标记完毕后，再扫描整个空间中未被标记的对象并进行回收</strong></p>
+<p><strong>缺点</strong>：</p>
+<ol>
+<li>效率不高</li>
+<li>清除之后产生大量内存碎片</li>
+</ol>
+<h5 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h5><p><strong>复制算法将可用内存按容量划分为大小相等的两块，每次只使用其中的一块。当这一块的内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已使用过的内存空间一次清理掉。</strong>这种算法适用于对象存活率低的场景，比如新生代。这样使得每次都是对整个半区进行内存回收，内存分配时也就不用考虑内存碎片等复杂情况，只要移动堆顶指针，按顺序分配内存即可，实现简单，运行高效。</p>
+<p><strong>缺点</strong>: 浪费内存，每次只能使用一半</p>
+<h5 id="标记整理算法"><a href="#标记整理算法" class="headerlink" title="标记整理算法"></a>标记整理算法</h5><p>复制收集算法在对象存活率较高时就要进行较多的复制操作，效率将会变低。更关键的是，如果不想浪费50%的空间，就需要有额外的空间进行分配担保，以应对被使用的内存中所有对象都100%存活的极端情况，所以在老年代一般不能直接选用这种算法。<strong>标记整理算法的标记过程类似标记清除算法，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存，类似于磁盘整理的过程，该垃圾回收算法适用于对象存活率高的场景（老年代）</strong></p>
+<h5 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h5><p><strong>不同的对象的生命周期(存活情况)是不一样的，而不同生命周期的对象位于堆中不同的区域，因此对堆内存不同区域采用不同的策略进行回收可以提高 JVM 的执行效率。</strong>当代商用虚拟机使用的都是分代收集算法：新生代对象存活率低，就采用复制算法；老年代存活率高，就用标记清除算法或者标记整理算法。Java堆内存一般可以分为新生代、老年代和永久代三个模块。</p>
+<p><img src="http://static.zybuluo.com/Rico123/bqgcx5anvacebj1yxpaufk0x/%E5%88%86%E4%BB%A3%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95%E6%80%BB.jpg" alt="分代"></p>
+<ol>
+<li><p><strong>新生代（Young Generation）</strong></p>
+<p><strong>新生代的目标就是尽可能快速的收集掉那些生命周期短的对象，一般情况下，所有新生成的对象首先都是放在新生代的。</strong>新生代内存按照 8:1:1 的比例分为一个eden区和两个survivor(survivor0，survivor1)区，大部分对象在Eden区中生成。在进行垃圾回收时，先将eden区存活对象复制到survivor0区，然后清空eden区，当这个survivor0区也满了时，则将eden区和survivor0区存活对象复制到survivor1区，然后清空eden和这个survivor0区，此时survivor0区是空的，然后交换survivor0区和survivor1区的角色（即下次垃圾回收时会扫描Eden区和survivor1区），即保持survivor0区为空，如此往复。当survivor1区也不足以存放eden区和survivor0区的存活对象时，就将存活对象直接存放到老年代。如果老年代也满了，就会触发一次FullGC，也就是新生代、老年代都进行回收。注意，新生代发生的GC也叫做MinorGC，MinorGC发生频率比较高，不一定等 Eden区满了才触发。</p>
+</li>
+<li><p><strong>老年代（Old Generation）</strong></p>
+<p><strong>老年代存放的都是一些生命周期较长的对象，就像上面所叙述的那样，在新生代中经历了N次垃圾回收后仍然存活的对象就会被放到老年代中。</strong></p>
+<p>老年代的内存也比新生代大很多(大概比例是1:2)，当老年代满时会触发Major GC(Full GC)，老年代对象存活时间比较长，因此FullGC发生的频率比较低。</p>
+</li>
+<li><p>永久代（Permanent Generation）</p>
+<p><strong>永久代主要用于存放静态文件，如Java类、方法等。</strong>永久代对垃圾回收没有显著影响，但是有些应用可能动态生成或者调用一些class，例如使用反射、动态代理、CGLib等bytecode框架时，在这种时候需要设置一个比较大的永久代空间来存放这些运行过程中新增的类。</p>
+</li>
+</ol>
+<h3 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h3><p>Java技术体系中所提倡的自动内存管理最终可以归结为自动化地解决了两个问题：<strong>给对象分配内存</strong> 以及 <strong>回收分配给对象的内存</strong>。一般而言，对象主要分配在新生代的Eden区上，如果启动了本地线程分配缓存(TLAB)，将按线程优先在TLAB上分配。少数情况下也可能直接分配在老年代中。总的来说，内存分配规则并不是一层不变的，其细节取决于当前使用的是哪一种垃圾收集器组合，还有虚拟机中与内存相关的参数的设置。</p>
+<ol>
+<li><strong>对象优先在Eden分配，当Eden区没有足够空间进行分配时，虚拟机将发起一次MinorGC。</strong></li>
+<li><strong>大对象直接进入老年代。</strong>所谓的大对象是指，需要大量连续内存空间的Java对象，最典型的大对象就是那种很长的字符串以及数组。</li>
+<li><strong>长期存活的对象将进入老年代。</strong>当对象在新生代中经历过一定次数（默认为15）的Minor GC后，就会被晋升到老年代中。</li>
+<li><strong>动态对象年龄判定。</strong>为了更好地适应不同程序的内存状况，虚拟机并不是永远地要求对象年龄必须达到了MaxTenuringThreshold才能晋升老年代，如果在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无须等到MaxTenuringThreshold中要求的年龄。</li>
+</ol>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+                <source type="audio/mpeg" src>
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        <li title="0" data-url="http://streamoc.music.tc.qq.com/M800000rCTcJ3Zla2I.mp3"></li>
+                    
+                        <li title="1" data-url="http://streamoc.music.tc.qq.com/M800000f8nPG0fKi8h.mp3"></li>
+                    
+                </ul>
+            
+        </div>
+        
+    <div id="gitalk-container" class="comment link" data-ae="true" data-ci="3f69a7e8b6decb747d68" data-cs="61814092b21724eb1a699989186d847357ac1389" data-r="Alexkaer.github.io" data-o="Alexkaer" data-a="Alexkaer" data-d="false">查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>
